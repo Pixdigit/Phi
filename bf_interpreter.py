@@ -13,14 +13,14 @@ def read_triggers(list_of_triggers, alt_value=None):
 #Read conf from comandline
 filename = read_triggers(["-f", "--file"])
 if filename is None:
-	if len(sys.argv) < 2:
-		filename = "."
-	filename = sys.argv[1]
+	code = sys.argv[-1]
+else:
+	try:
+		code_file = open(filename, "r")
+		code = code_file.read()
+	except IOError:
+		raise IOError("Could not find specified file: \"" + filename + "\"")
 
-try:
-	code_file = open(filename, "r")
-except IOError:
-	raise IOError("Could not find specified file: \"" + filename + "\"")
 
 #ascii or str out
 print_mode = read_triggers(["-m", "--mode"], "ascii")
@@ -48,8 +48,6 @@ if in_file_name == "stdin":
 else:
 	in_file = open(in_file_name, "r")
 
-#load code
-code = code_file.read()
 #remove unnecessary chars
 code = "".join([char for char in code
 	if char in ["<", ">", "+", "-", ",", ".", "[", "]"]])
